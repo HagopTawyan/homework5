@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hagop'sBoxes</title>
+	</head>
+	<body>
+		<canvas id="Hagop'sBoxes"></canvas>
+
+		<script>
+			
+			const canvas = document.getElementById("Hagop'sBoxes");
+            const context = canvas.getContext("2d");
+
+			canvas.width=1600;
+			canvas.height=900;
+
+	const rand = function(num){
+		return Math.floor(Math.random() * num) + 1;
+	};
+
+	const colorArray = ["#00ff00", "#00ffff", "#ff0000","#bf00ff", "#00ff40",
+	 "#ffff00"];
+
+	const creatBoxes = function(count, canvasWidth, canvasHeight){
+
+		const location = [];
+
+		const array = function(num){
+			if (num<1){
+				return ""
+			}
+
+			location.push({
+
+				x:rand(canvasWidth - 50),
+				y:rand(canvasHeight - 50),
+				width: 50,
+				height: 50,
+				xDelta: 4,
+				yDelta: 4,
+				color: colorArray[rand(6) - 1],
+			});
+			array(num - 1);
+		};
+
+		array(count);
+		return location;
+	};
+
+
+		const hitTheWallBaby = creatBoxes(100, canvas.width, canvas.height);
+
+		const forEach = function(arr, f){
+			const helper = function(n){
+				if(n===arr.length)
+					return;
+
+				f(arr[n]);
+				helper(n + 1);
+
+			};
+			helper(0);
+		};
+
+		 const draw = function(){
+      	context.clearRect(0, 0, canvas.width, canvas.height);
+        const drawRect = function(num){
+          
+          context.fillStyle = num.color;
+          context.fillRect(num.x, num.y, num.width, num.height);
+        }
+        
+        forEach(hitTheWallBaby, drawRect);
+      }
+      
+      const updateData = function(){
+        
+        const help = function(location){
+          if (location.x + location.width >= canvas.width || location.x <= 0) {
+            location.xDelta = -location.xDelta;
+            location.color = colorArray[rand(6) - 1]
+          }
+          if (location.y + location.height >= canvas.height || location.y <= 0) {
+            location.yDelta = -location.yDelta;
+            location.color = colorArray[rand(6) - 1]
+          }
+          
+          
+          
+          location.x = location.x + location.xDelta;
+          location.y = location.y + location.yDelta;
+        }
+        
+        forEach(hitTheWallBaby, help);
+      }
+      
+      const loop = function(){
+        draw();
+        updateData();
+        
+        requestAnimationFrame(loop);
+      }
+      
+      loop()
+		</script>	
+		
+	</body>
+</html>
